@@ -4,6 +4,7 @@ import com.itheima.constant.ShopCode;
 
 /**
  * 自定义异常
+ * @author Tom
  */
 public class CustomerException extends RuntimeException{
 

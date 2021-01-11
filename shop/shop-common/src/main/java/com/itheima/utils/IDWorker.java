@@ -2,6 +2,10 @@ package com.itheima.utils;
 
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Tom
+ * 雪花算法
+ */
 @Configuration
 public class IDWorker {
 

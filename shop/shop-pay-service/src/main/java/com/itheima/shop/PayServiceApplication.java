@@ -42,7 +42,5 @@ public class PayServiceApplication {
         executor.initialize();
 
         return executor;
-
     }
-
 }

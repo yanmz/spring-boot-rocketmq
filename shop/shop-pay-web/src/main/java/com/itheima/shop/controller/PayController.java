@@ -24,5 +24,4 @@ public class PayController {
     public Result callBackPayment(@RequestBody TradePay pay) throws Exception {
         return payService.callbackPayment(pay);
     }
-
 }

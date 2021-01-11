@@ -40,7 +40,7 @@ public class RestTemplateConfig {
 
     @Bean
     @ConditionalOnMissingBean({ClientHttpRequestFactory.class})
-    public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
+    public ClientHttpRequestFactory simpleClientHttpRequestFactory() {  
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         // ms
         factory.setReadTimeout(15000);

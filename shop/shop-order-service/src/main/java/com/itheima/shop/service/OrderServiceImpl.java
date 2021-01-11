@@ -20,7 +20,6 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,6 +27,9 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author Tom
+ */
 @Slf4j
 @Component
 @Service(interfaceClass = IOrderService.class)
@@ -54,7 +56,6 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private IDWorker idWorker;
 
-
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
@@ -73,7 +74,7 @@ public class OrderServiceImpl implements IOrderService {
             reduceMoneyPaid(order);
 
             //模拟异常抛出
-            //CastException.cast(ShopCode.SHOP_FAIL);
+            CastException.cast(ShopCode.SHOP_FAIL);
 
             //6.确认订单
             updateOrderStatus(order);
@@ -100,6 +101,29 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     /**
+     * 发送订单失败消息
+     * @param topic
+     * @param tag
+     * @param toString
+     * @param toJSONString
+     */
+    private void sendCancelOrder(String topic, String tag, String toString, String toJSONString) throws InterruptedException, RemotingException, MQClientException, MQBrokerException {
+        Message message = new Message(topic,tag,toString,toJSONString.getBytes());
+        rocketMQTemplate.getProducer().send(message);
+    }
+
+    private void updateOrderStatus(TradeOrder order) {
+        order.setOrderStatus(ShopCode.SHOP_ORDER_CONFIRM.getCode());
+        order.setPayStatus(ShopCode.SHOP_ORDER_PAY_STATUS_NO_PAY.getCode());
+        order.setConfirmTime(new Date());
+        int r = orderMapper.updateByPrimaryKey(order);
+        if (r <= 0) {
+            CastException.cast(ShopCode.SHOP_ORDER_CONFIRM_FAIL);
+        }
+        log.info("订单:["+order.getOrderId()+"]状态修改成功");
+    }
+
+    /**
      * 使用余额
      * @param order
      */
@@ -110,13 +134,12 @@ public class OrderServiceImpl implements IOrderService {
             tradeUserMoneyLog.setUserId(order.getUserId());
             tradeUserMoneyLog.setUseMoney(order.getMoneyPaid());
             tradeUserMoneyLog.setMoneyLogType(ShopCode.SHOP_USER_MONEY_PAID.getCode());
-            Result  result = userService.reduceMoneyPaid(order);
+            Result  result = userService.updateMoneyPaid(tradeUserMoneyLog);
             if(result.getSuccess().equals(ShopCode.SHOP_FAIL.getSuccess())){
                 CastException.cast(ShopCode.SHOP_USER_MONEY_REDUCE_FAIL);
              }
             log.info("订单："+order.getOrderId()+",扣减余额成功");
         }
-
     }
 
     /**
@@ -211,8 +234,11 @@ public class OrderServiceImpl implements IOrderService {
            order.setCouponPaid(BigDecimal.ZERO);
        }
         //7.核算订单支付金额  订单总金额-余额-优惠券金额
-        BigDecimal payAmount = order.getOrderAmount().subtract(order.getMoneyPaid()).subtract(order.getCouponPaid());
+        //BigDecimal payAmount = order.getOrderAmount().subtract(order.getMoneyPaid()).subtract(order.getCouponPaid());
 
+       //计算订单支付总价
+        order.setPayAmount(orederAmount.subtract(order.getCouponPaid())
+                .subtract(order.getMoneyPaid()));
         //8.设置下单时间
         order.setAddTime(new Date());
         //9.保存订单到数据库
@@ -237,7 +263,6 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 校验订单
-     *
      * @param order
      */
     private void checkOrder(TradeOrder order) {
@@ -251,7 +276,7 @@ public class OrderServiceImpl implements IOrderService {
             CastException.cast(ShopCode.SHOP_GOODS_NO_EXIST);
         }
         //3.检验下单用户是否存在
-        TradeUser users =  userService.findOne(order.getGoodsId());
+        TradeUser users =  userService.findOne(order.getUserId());
         if(users==null){
             CastException.cast(ShopCode.SHOP_USER_NO_EXIST);
         }

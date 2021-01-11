@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 @RocketMQMessageListener(topic = "${mq.order.topic}", consumerGroup = "${mq.order.consumer.group.name}", messageModel = MessageModel.BROADCASTING)
 public class CancelMQListener implements RocketMQListener<MessageExt> {
 
-
     @Autowired
     private TradeCouponMapper couponMapper;
 
@@ -47,6 +46,5 @@ public class CancelMQListener implements RocketMQListener<MessageExt> {
             e.printStackTrace();
             log.error("回退优惠券失败");
         }
-
     }
 }

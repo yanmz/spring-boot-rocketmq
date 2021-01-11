@@ -134,12 +134,10 @@ public class PayServiceImpl implements IPayService{
 
             }
             return new Result(ShopCode.SHOP_SUCCESS.getSuccess(),ShopCode.SHOP_SUCCESS.getMessage());
-        }else{
+        }else {
             CastException.cast(ShopCode.SHOP_PAYMENT_PAY_ERROR);
-            return new Result(ShopCode.SHOP_FAIL.getSuccess(),ShopCode.SHOP_FAIL.getMessage());
+            return new Result(ShopCode.SHOP_FAIL.getSuccess(), ShopCode.SHOP_FAIL.getMessage());
         }
-
-
     }
 
     /**

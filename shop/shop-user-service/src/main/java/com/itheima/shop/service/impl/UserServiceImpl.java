@@ -7,7 +7,6 @@ import com.itheima.entity.Result;
 import com.itheima.exception.CastException;
 import com.itheima.shop.mapper.TradeUserMapper;
 import com.itheima.shop.mapper.TradeUserMoneyLogMapper;
-import com.itheima.shop.pojo.TradeOrder;
 import com.itheima.shop.pojo.TradeUser;
 import com.itheima.shop.pojo.TradeUserMoneyLog;
 import com.itheima.shop.pojo.TradeUserMoneyLogExample;
@@ -33,12 +32,6 @@ public class UserServiceImpl implements IUserService{
             CastException.cast(ShopCode.SHOP_REQUEST_PARAMETER_VALID);
         }
         return userMapper.selectByPrimaryKey(userId);
-    }
-
-    @Override
-    public Result reduceMoneyPaid(TradeOrder order) {
-
-        return null;
     }
 
     @Override

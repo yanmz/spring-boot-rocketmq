@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 
 
+/**
+ * @author Tom
+ */
 @Slf4j
 @Component
 @RocketMQMessageListener(topic = "${mq.pay.topic}",consumerGroup = "${mq.pay.consumer.group.name}",messageModel = MessageModel.BROADCASTING)
@@ -26,7 +29,6 @@ public class PaymentListener implements RocketMQListener<MessageExt>{
 
     @Override
     public void onMessage(MessageExt messageExt) {
-
         log.info("接收到支付成功消息");
 
         try {
@@ -43,6 +45,5 @@ public class PaymentListener implements RocketMQListener<MessageExt>{
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
     }
 }

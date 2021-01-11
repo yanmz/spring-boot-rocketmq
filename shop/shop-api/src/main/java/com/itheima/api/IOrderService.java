@@ -7,5 +7,5 @@ public interface IOrderService {
     /**
      * 下单接口
      */
-    public Result confirmOrder(TradeOrder order);
+    Result confirmOrder(TradeOrder order);
 }

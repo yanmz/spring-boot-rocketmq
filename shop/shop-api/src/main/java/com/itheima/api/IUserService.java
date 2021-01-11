@@ -1,12 +1,12 @@
 package com.itheima.api;
 
 import com.itheima.entity.Result;
-import com.itheima.shop.pojo.TradeOrder;
 import com.itheima.shop.pojo.TradeUser;
+import com.itheima.shop.pojo.TradeUserMoneyLog;
 
 public interface  IUserService {
 
     TradeUser findOne(Long goodsId);
 
-    Result reduceMoneyPaid(TradeOrder order);
+    Result updateMoneyPaid(TradeUserMoneyLog userMoneyLog);
 }

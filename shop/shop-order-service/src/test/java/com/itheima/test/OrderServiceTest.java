@@ -36,6 +36,7 @@ public class OrderServiceTest {
         order.setShippingFee(BigDecimal.ZERO);
         order.setOrderAmount(new BigDecimal(1000));
         order.setMoneyPaid(new BigDecimal(100));
+        order.setCouponPaid(new BigDecimal(20));
         orderService.confirmOrder(order);
 
         System.in.read();
